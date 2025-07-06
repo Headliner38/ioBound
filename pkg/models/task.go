@@ -20,7 +20,7 @@ type Task struct {
 	CreatedAt  time.Time  `json:"created_at"`
 	StartedAt  *time.Time `json:"started_at"`
 	FinishedAt *time.Time `json:"finished_at"`
-	Result     string     `json:"result"` // не знаю пока нужно вообще это поле или нет
+	Result     string     `json:"result"`
 	mutex      sync.RWMutex
 }
 
@@ -62,6 +62,8 @@ func (t *Task) UpdateTaskStatus(newStatus string) {
 }
 
 func (t *Task) TaskDuration() time.Duration {
+	t.mutex.RLock()
+	defer t.mutex.RUnlock()
 	if t.StartedAt == nil {
 		return 0
 	}
